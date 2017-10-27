@@ -27,7 +27,6 @@ namespace OctokitDemo.Controllers
 		// repositories which include public and private repositories.
 		public async Task<ActionResult> Index()
 		{
-			// var accessToken = Session["OAuthToken"] as string;
 			var accessToken = HttpContext.Session.GetString(SessionKeyToken);
 			if (accessToken != null)
 			{
@@ -40,8 +39,14 @@ namespace OctokitDemo.Controllers
 			{
 				// The following requests retrieves all of the user's repositories and
 				// requires that the user be logged in to work.
+
+
+				// for looking at repositories of user
 				var repositories = await client.Repository.GetAllForCurrent();
-				var model = new IndexViewModel(repositories);
+				//var model = new IndexViewModel(repositories);
+
+				// for looking at users credentials
+				var model = new IndexCredViewModel(client.Credentials);
 
 				return View(model);
 			}
@@ -59,15 +64,12 @@ namespace OctokitDemo.Controllers
 		{
 			if (!String.IsNullOrEmpty(code))
 			{
-				// var expectedState = Session["CSRF:State"] as string;
 				var expectedState = HttpContext.Session.GetString(SessionKeyCSRF);
 				if (state != expectedState) throw new InvalidOperationException("SECURITY FAIL!");
-				//Session["CSRF:State"] = null;
-				HttpContext.Session.SetString(SessionKeyCSRF, null);
+				HttpContext.Session.SetString(SessionKeyCSRF, "");
 
 				var token = await client.Oauth.CreateAccessToken(
 					new OauthTokenRequest(clientId, clientSecret, code));
-				//Session["OAuthToken"] = token.AccessToken;
 				HttpContext.Session.SetString(SessionKeyToken, token.AccessToken);
 			}
 
@@ -76,9 +78,7 @@ namespace OctokitDemo.Controllers
 
 		private string GetOauthLoginUrl()
 		{
-			//string csrf = Membership.GeneratePassword(24, 1);
 			string csrf = Password.Generate(24, 1);
-			//Session["CSRF:State"] = csrf;
 			HttpContext.Session.SetString(SessionKeyCSRF, csrf);
 
 			// 1. Redirect users to request GitHub access

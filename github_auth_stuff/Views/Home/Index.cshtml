@@ -1,15 +1,25 @@
-﻿@model OctokitDemo.Models.IndexViewModel
+﻿@model OctokitDemo.Models.IndexCredViewModel
 
 @{
 	ViewBag.Title = "Repositories";
 }
 
+
+<!--
 <div>
 	<h1>My Repositories</h1>
 	<ul>
-		@foreach (var repository in Model.Repositories)
-		{
-			<li><a href="@repository.HtmlUrl">@repository.FullName</a></li>
-		}
+		//foreach (var repository in Model.Repositories)
+		//{
+			<li><a href="repository.HtmlUrl">repository.FullName</a></li>
+		//}
 	</ul>
+</div>
+-->
+
+<div>
+	<h1>Username</h1>
+	<h2>@Model.Creds.Login</h2>
+	<h1>Password</h1>
+	<h2>@Model.Creds.Password</h2>
 </div>
